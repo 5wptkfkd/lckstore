@@ -82,3 +82,27 @@ let cart = [];
   // 初始化頁面時顯示購物車內容
   window.onload = () => updateCartDisplay();
   
+  function submitOrder(customerName, productName, quantity, totalPrice) {
+    fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            customer_name: customerName,
+            product_name: productName,
+            quantity: quantity,
+            total_price: totalPrice
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('訂單提交成功！');
+        } else {
+            alert('訂單提交失敗，請稍後再試');
+        }
+    })
+    .catch(error => {
+        console.error('提交訂單時發生錯誤:', error);
+    });
+}

@@ -14,13 +14,13 @@
 
             cartTable.innerHTML = ""; // 清空購物車內容
             if (cart.length === 0) {
-                cartTable.innerHTML = "<tr><td colspan='4'>購物車目前為空。</td></tr>";
+                cartTable.innerHTML = "<tr><td colspan='5'>購物車目前為空。</td></tr>";
                 cartTotal.textContent = "總計：$0";
                 return;
             }
 
             let total = 0;
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 const row = document.createElement("tr");
 
                 // 商品名稱
@@ -33,9 +33,14 @@
                 priceCell.textContent = `$${item.price}`;
                 row.appendChild(priceCell);
 
-                // 數量
+                // 數量（帶輸入框）
                 const quantityCell = document.createElement("td");
-                quantityCell.textContent = item.quantity;
+                const quantityInput = document.createElement("input");
+                quantityInput.type = "number";
+                quantityInput.value = item.quantity;
+                quantityInput.min = 1;
+                quantityInput.onchange = () => updateQuantity(index, quantityInput.value);
+                quantityCell.appendChild(quantityInput);
                 row.appendChild(quantityCell);
 
                 // 小計
@@ -43,6 +48,14 @@
                 const subtotalCell = document.createElement("td");
                 subtotalCell.textContent = `$${subtotal}`;
                 row.appendChild(subtotalCell);
+
+                // 刪除按鈕
+                const deleteCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "刪除";
+                deleteButton.onclick = () => removeFromCart(index);
+                deleteCell.appendChild(deleteButton);
+                row.appendChild(deleteCell);
 
                 // 計算總價
                 total += subtotal;
@@ -53,6 +66,75 @@
 
             // 更新總計
             cartTotal.textContent = `總計：$${total}`;
+        }
+
+        // 更新商品數量
+        function updateQuantity(index, newQuantity) {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            newQuantity = parseInt(newQuantity);
+
+            if (newQuantity <= 0) {
+                alert("數量必須大於 0！");
+                return;
+            }
+
+            cart[index].quantity = newQuantity;
+            localStorage.setItem("cart", JSON.stringify(cart));
+            loadCart();
+        }
+
+        // 移除商品
+        function removeFromCart(index) {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.splice(index, 1); // 從陣列中移除商品
+            localStorage.setItem("cart", JSON.stringify(cart));
+            loadCart();
+        }
+
+        // 送出訂單
+        function submitOrder() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const nickname = document.getElementById("nickname").value;
+
+            if (cart.length === 0) {
+                alert("購物車為空，無法送出訂單！");
+                return;
+            }
+
+            if (!nickname) {
+                alert("請輸入您的暱稱！");
+                return;
+            }
+
+            // 構建訂單資料
+            const orderData = {
+                nickname: nickname,
+                items: cart
+            };
+
+            // 發送訂單到後台
+            fetch("http://localhost:5000/api/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("訂單已成功送出！");
+                    // 清空購物車
+                    localStorage.removeItem("cart");
+                    loadCart();
+                    document.getElementById("nickname").value = "";
+                } else {
+                    alert("送出訂單時發生錯誤，請稍後再試！");
+                }
+            })
+            .catch(error => {
+                console.error("送出訂單時發生錯誤：", error);
+                alert("無法送出訂單，請檢查您的網路連線！");
+            });
         }
 
         // 初始化購物車頁面
@@ -78,6 +160,7 @@
                     <th>單價</th>
                     <th>數量</th>
                     <th>小計</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody id="cart-items">
@@ -85,6 +168,12 @@
             </tbody>
         </table>
         <h3 id="cart-total">總計：$0</h3>
+
+        <div>
+            <label for="nickname">您的暱稱：</label>
+            <input type="text" id="nickname" placeholder="輸入您的暱稱">
+        </div>
+        <button onclick="submitOrder()">送出訂單</button>
     </main>
 
     <footer>
