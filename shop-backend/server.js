@@ -45,9 +45,9 @@ app.post('/api/orders', (req, res) => {
 
         const orderId = result.insertId;
 
-        // 插入訂單詳細表
-        const orderItemsQuery = 'INSERT INTO order_items (order_id, product_name, price, quantity) VALUES ?';
-        const orderItemsData = items.map(item => [orderId, item.name, item.price, item.quantity]);
+        // 插入訂單詳細表，新增商品型號字段
+        const orderItemsQuery = 'INSERT INTO order_items (order_id, product_name, model, price, quantity) VALUES ?';
+        const orderItemsData = items.map(item => [orderId, item.name, item.model, item.price, item.quantity]);
 
         db.query(orderItemsQuery, [orderItemsData], (err) => {
             if (err) {
@@ -59,6 +59,7 @@ app.post('/api/orders', (req, res) => {
         });
     });
 });
+
 
 // 啟動伺服器
 const PORT = 5000;

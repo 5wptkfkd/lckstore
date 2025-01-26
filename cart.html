@@ -27,7 +27,10 @@
                 const nameCell = document.createElement("td");
                 nameCell.textContent = item.name;
                 row.appendChild(nameCell);
-
+                // type
+                const typeCell = document.createElement("td");
+                typeCell.textContent = `$${item.model}`;
+                row.appendChild(typeCell);
                 // 單價
                 const priceCell = document.createElement("td");
                 priceCell.textContent = `$${item.price}`;
@@ -145,9 +148,12 @@
     <header>
         <h1>購物車</h1>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="product.html">Products</a>
+            <a href="main_page.html">必讀</a>
+            <a href="index.html">開團中</a>
             <a href="cart.html">Cart</a>
+            <a href="earp.html">earp</a>
+            <a href="form.html">各式連結</a>
+
         </nav>
     </header>
 
@@ -157,12 +163,14 @@
             <thead>
                 <tr>
                     <th>商品名稱</th>
+                    <th>型號</th>
                     <th>單價</th>
                     <th>數量</th>
                     <th>小計</th>
                     <th>操作</th>
                 </tr>
             </thead>
+            
             <tbody id="cart-items">
                 <!-- 商品清單由 JavaScript 動態生成 -->
             </tbody>

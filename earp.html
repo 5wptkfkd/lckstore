@@ -6,26 +6,53 @@
     <title>2025 EarpEarp</title>
     <link rel="stylesheet" href="styles/style.css">
     <script>
-        // 定義商品資料
+        // 定義商品資料與型號
         const products = {
-            "MagSafe手機支架": 420,
-            "MagSafe卡匣": 470,
-            "果凍手機殼": 350,
-            "Z-Flip手機殼": 350,
-            "手機支架": 310,
-            "貓型圍Q版": 200,
+            "MagSafe手機支架": { price: 420, models: ["標準版", "豪華版", "旅行版"] },
+            "MagSafe卡匣": { price: 470, models: ["透明", "不透明"] },
+            "果凍手機殼": { price: 350, models: ["紅色", "藍色", "透明"] },
+            "Z-Flip手機殼": { price: 350, models: ["柔軟款", "硬殼款"] },
+            "手機支架": { price: 310, models: ["簡易版", "豪華版"] },
+            "貓型圍Q版": { price: 200, models: ["小貓版", "大貓版"] },
         };
 
-        // 將選擇的商品加入購物車並儲存在 localStorage
+        // 更新型號選單
+        function updateModelOptions() {
+            const productSelect = document.getElementById("productSelect");
+            const modelSelect = document.getElementById("modelSelect");
+            const selectedProduct = productSelect.value;
+
+            // 清空型號選單
+            modelSelect.innerHTML = '<option value="" disabled selected>請選擇型號</option>';
+
+            // 如果選擇了商品，則載入對應型號
+            if (selectedProduct) {
+                const models = products[selectedProduct].models;
+                models.forEach(model => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+
+        // 將選擇的商品與型號加入購物車
         function addToCart() {
             const productSelect = document.getElementById("productSelect");
+            const modelSelect = document.getElementById("modelSelect");
             const quantityInput = document.getElementById("quantity-product1");
             const selectedProduct = productSelect.value;
-            const price = products[selectedProduct];
+            const selectedModel = modelSelect.value;
             const quantity = parseInt(quantityInput.value);
 
             if (!selectedProduct) {
                 alert("請選擇商品！");
+                return;
+            }
+
+            if (!selectedModel) {
+                alert("請選擇型號！");
                 return;
             }
 
@@ -34,35 +61,47 @@
                 return;
             }
 
+            const price = products[selectedProduct].price;
+
             // 從 localStorage 獲取購物車資料
             let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-            // 檢查購物車中是否已存在該商品
-            const existingProduct = cart.find(item => item.name === selectedProduct);
+            // 檢查購物車中是否已存在該商品與型號
+            const existingProduct = cart.find(
+                item => item.name === selectedProduct && item.model === selectedModel
+            );
+
             if (existingProduct) {
                 existingProduct.quantity += quantity; // 更新數量
             } else {
                 // 添加新商品
-                cart.push({ name: selectedProduct, price: price, quantity: quantity });
+                cart.push({ name: selectedProduct, model: selectedModel, price: price, quantity: quantity });
             }
 
             // 更新購物車到 localStorage
             localStorage.setItem("cart", JSON.stringify(cart));
 
-            alert(`已將 ${quantity} 個 ${selectedProduct}（$${price}）加入購物車！`);
+            alert(`已將 ${quantity} 個 ${selectedProduct} (${selectedModel})（$${price}）加入購物車！`);
         }
     </script>
 </head>
 <body>
     <header>
         <h1>商品頁面</h1>
+        <nav>
+            <a href="main_page.html">必讀</a>
+            <a href="index.html">開團中</a>
+            <a href="cart.html">Cart</a>
+            <a href="earp.html">earp</a>
+            <a href="form.html">各式連結</a>
+        </nav>
     </header>
 
     <main>
         <section>
             <h2>選擇商品</h2>
             <label for="productSelect">請選擇商品：</label>
-            <select id="productSelect">
+            <select id="productSelect" onchange="updateModelOptions()">
                 <option value="" disabled selected>請選擇</option>
                 <option value="MagSafe手機支架">MagSafe手機支架 - $420</option>
                 <option value="MagSafe卡匣">MagSafe卡匣 - $470</option>
@@ -71,6 +110,12 @@
                 <option value="手機支架">手機支架 - $310</option>
                 <option value="貓型圍Q版">貓型圍Q版 - $200</option>
             </select>
+
+            <label for="modelSelect">請選擇型號：</label>
+            <select id="modelSelect">
+                <option value="" disabled selected>請選擇型號</option>
+            </select>
+
             <label for="quantity-product1">數量：</label>
             <input type="number" id="quantity-product1" value="1" min="1" max="10">
             <button onclick="addToCart()">加入購物車</button>
