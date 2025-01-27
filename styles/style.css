@@ -59,7 +59,7 @@ button:hover {
 }
 
 .product-image img {
-  max-width: 500px; /* 限制圖片寬度 */
+  max-width: 300px; /* 限制圖片寬度 */
   height: auto;     /* 確保圖片等比例縮放 */
   border-radius: 10px; /* 圓角邊框，可選 */
 }
