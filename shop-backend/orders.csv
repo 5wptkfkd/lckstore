@@ -1,0 +1,6 @@
+﻿id,nickname,total_price,created_at,accNum,transDate,model,acc_num,trans_date
+1,qq,1550.00,Sat Jan 25 2025 23:17:51 GMT+0800 (台北標準時間),,,,,
+2,qqq,350.00,Sun Jan 26 2025 00:12:31 GMT+0800 (台北標準時間),,,,,
+3,TestUser,100.50,Sun Jan 26 2025 21:12:19 GMT+0800 (台北標準時間),,,,1234567890,Sun Jan 26 2025 00:00:00 GMT+0800 (台北標準時間)
+4,wei,350.00,Sun Jan 26 2025 21:21:43 GMT+0800 (台北標準時間),,,,21212,Sun Jan 26 2025 00:00:00 GMT+0800 (台北標準時間)
+5,wei,700.00,Sun Jan 26 2025 21:24:04 GMT+0800 (台北標準時間),,,,93284,Tue Jan 14 2025 00:00:00 GMT+0800 (台北標準時間)

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 HLE 周邊商品</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script>
+        // 定義商品資料與型號
+        const products = {
+            "隊服(白)":{ price: 2800, models: ["90", "95","100","105","110","115"] },
+            "隊服(黑)":{ price: 2800, models: ["90", "95","100","105","110","115"] },
+            "外套":{ price: 4350, models: ["90", "95","100","105","110","115"] },
+            "ID名條": { price: 350, models: ["Zeus", "Peanut","Zeka","Viper","Delight"] },
+            "刺繡胸針": { price: 470, models: ["Zeus", "Peanut","Zeka","Viper","Delight"] },
+            "符咒鑰匙圈": { price: 350, models: ["Zeus", "Peanut","Zeka","Viper","Delight"] },
+            "隊服鑰匙圈": { price: 350, models: ["Zeus", "Peanut","Zeka","Viper","Delight"] }
+        };
+
+        // 更新型號選單
+        function updateModelOptions() {
+            const productSelect = document.getElementById("productSelect");
+            const modelSelect = document.getElementById("modelSelect");
+            const selectedProduct = productSelect.value;
+
+            // 清空型號選單
+            modelSelect.innerHTML = '<option value="" disabled selected>請選擇款式</option>';
+
+            // 如果選擇了商品，則載入對應型號
+            if (selectedProduct) {
+                const models = products[selectedProduct].models;
+                models.forEach(model => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+
+        // 將選擇的商品與型號加入購物車
+        function addToCart() {
+            const productSelect = document.getElementById("productSelect");
+            const modelSelect = document.getElementById("modelSelect");
+            const quantityInput = document.getElementById("quantity-product1");
+            const selectedProduct = productSelect.value;
+            const selectedModel = modelSelect.value;
+            const quantity = parseInt(quantityInput.value);
+
+            if (!selectedProduct) {
+                alert("請選擇商品！");
+                return;
+            }
+
+            if (!selectedModel) {
+                alert("請選擇款式！");
+                return;
+            }
+
+            if (quantity <= 0) {
+                alert("數量必須大於 0！");
+                return;
+            }
+
+            const price = products[selectedProduct].price;
+
+            // 從 localStorage 獲取購物車資料
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            // 檢查購物車中是否已存在該商品與型號
+            const existingProduct = cart.find(
+                item => item.name === selectedProduct && item.model === selectedModel
+            );
+
+            if (existingProduct) {
+                existingProduct.quantity += quantity; // 更新數量
+            } else {
+                // 添加新商品
+                cart.push({ name: selectedProduct, model: selectedModel, price: price, quantity: quantity });
+            }
+
+            // 更新購物車到 localStorage
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            alert(`已將 ${quantity} 個 ${selectedProduct} (${selectedModel})（$${price}）加入購物車！`);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>商品頁面</h1>
+        <nav>
+            <a href="main_page.html">必讀</a>
+            <a href="index.html">開團中</a>
+            <a href="product.html">所有團務</a>
+            <a href="form.html">各式連結</a>
+            <a href="cart.html">沒用的購物車</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="product-display">
+            <div class="product-image">
+                <img src="images/HLEMD.jpg" alt="商品圖片">
+            </div>
+            <div class="product-info">
+                <h2>HLE MD</h2>
+                <p>不須二補 </p>
+                <p>韓華週邊線上預購 隊服和外套名條要另外買</p>
+                <p>需要二補</p>
+                <p>1.25HLE隊服 白/黑 $2800</p>
+                <p>2.25HLE 外套 $4350</p>
+                <p>3.選手ID貼 $350</p>
+                <p>以上收單到2/2 23:59</p>
+                <p>4.slogan短袖 $1050</p>
+                <p>5.刺繡胸針 $280</p>
+                <p>6.符咒鑰匙圈$280</p>
+                <p>7. 隊服鑰匙圈$280</p>
+                <p>8.key artwork鑰匙圈$330</p>
+                <p>9.紙膠帶 黑/橘 $150</p>
+            </div>
+        </section>
+        <section>
+            <h2>選擇商品</h2>
+            <label for="productSelect">請選擇商品：</label>
+            <select id="productSelect" onchange="updateModelOptions()">
+                <option value="" disabled selected>請選擇</option>
+                <option value="隊服(白)">隊服(白) - $2800</option>
+                <option value="隊服(黑)">隊服(黑) - $2800</option>
+                <option value="外套">外套 - $4350</option>
+                <option value="ID名條">ID名條 - $350</option>
+                <option value="刺繡胸針">刺繡胸針 - $280</option>
+                <option value="符咒鑰匙圈">符咒鑰匙圈 - $280</option>
+                <option value="隊服鑰匙圈">隊服鑰匙圈 - $280</option>
+            </select>
+
+            <label for="modelSelect">請選擇款式：</label>
+            <select id="modelSelect">
+                <option value="" disabled selected>請選擇款式</option>
+            </select>
+
+            <label for="quantity-product1">數量：</label>
+            <input type="number" id="quantity-product1" value="1" min="1" max="10">
+            <button onclick="addToCart()">加入購物車</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>© LCK T1 代購</p>
+    </footer>
+</body>
+</html>

@@ -96,49 +96,54 @@
 
         // 送出訂單
         function submitOrder() {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const nickname = document.getElementById("nickname").value;
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const nickname = document.getElementById("nickname").value;
+    const accNum = document.getElementById("accNum").value;
+    const transDate = document.getElementById("transDate").value;
 
-            if (cart.length === 0) {
-                alert("購物車為空，無法送出訂單！");
-                return;
-            }
+    if (cart.length === 0) {
+        alert("購物車為空，無法送出訂單！");
+        return;
+    }
 
-            if (!nickname) {
-                alert("請輸入您的暱稱！");
-                return;
-            }
+    if (!nickname || !accNum || !transDate) {
+        alert("請填寫完整的訂單資料！");
+        return;
+    }
 
-            // 構建訂單資料
-            const orderData = {
-                nickname: nickname,
-                items: cart
-            };
+    const orderData = {
+        nickname,
+        accNum,
+        transDate,
+        items: cart
+    };
 
-            // 發送訂單到後台
-            fetch("http://localhost:5000/api/orders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(orderData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("訂單已成功送出！");
-                    // 清空購物車
-                    localStorage.removeItem("cart");
-                    loadCart();
-                    document.getElementById("nickname").value = "";
-                } else {
-                    alert("送出訂單時發生錯誤，請稍後再試！");
-                }
-            })
-            .catch(error => {
-                console.error("送出訂單時發生錯誤：", error);
-                alert("無法送出訂單，請檢查您的網路連線！");
-            });
+    fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("訂單已成功送出！");
+            localStorage.removeItem("cart");
+            loadCart();
+            document.getElementById("nickname").value = "";
+            document.getElementById("accNum").value = "";
+            document.getElementById("transDate").value = "";
+        } else {
+            alert("送出訂單時發生錯誤，請稍後再試！");
         }
+    })
+    .catch(error => {
+        console.error("送出訂單時發生錯誤：", error);
+        alert("無法送出訂單，請檢查您的網路連線！");
+    });
+}
+
+    
 
         // 初始化購物車頁面
         window.onload = () => loadCart();
@@ -150,15 +155,15 @@
         <nav>
             <a href="main_page.html">必讀</a>
             <a href="index.html">開團中</a>
-            <a href="cart.html">Cart</a>
-            <a href="earp.html">earp</a>
+            <a href="product.html">所有團務</a>
             <a href="form.html">各式連結</a>
-
+            <a href="cart.html">沒用的購物車</a>
         </nav>
     </header>
 
     <main>
-        <h2>Your Shopping Cart</h2>
+        <h2>Shopping Cart</h2>
+        <h3>因為還沒寫好+我可能沒時間用 所以這邊暫時、、沒用 請善用表單Q_Q</h3>
         <table>
             <thead>
                 <tr>
@@ -178,14 +183,18 @@
         <h3 id="cart-total">總計：$0</h3>
 
         <div>
-            <label for="nickname">您的暱稱：</label>
-            <input type="text" id="nickname" placeholder="輸入您的暱稱">
+            <label for="nickname">您的社群ID：</label>
+            <input type="text" id="nickname" placeholder="輸入您的ID">
+            <label for="accNum">匯款帳號後五碼：</label>
+            <input type="text" id="accNum" placeholder="輸入後五碼">
+            <label for="transDate">匯款日期：</label>
+            <input type="date" id="transDate" required placeholder="輸入日期">
         </div>
         <button onclick="submitOrder()">送出訂單</button>
     </main>
 
     <footer>
-        <p>© 2025 商店網站</p>
+        <p>© LCK T1 代購</p>
     </footer>
 </body>
 </html>

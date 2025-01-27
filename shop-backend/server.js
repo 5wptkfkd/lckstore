@@ -26,9 +26,15 @@ db.connect(err => {
 
 // API：接收訂單資料
 app.post('/api/orders', (req, res) => {
-    const { nickname, items } = req.body;
+    const { nickname, items, accNum} = req.body;
+    const transDate = req.body.transDate;
 
-    if (!nickname || !items || items.length === 0) {
+// 檢查日期格式是否正確
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(transDate)) {
+    return res.status(400).json({ message: '日期格式不正確，應為 YYYY-MM-DD' });
+    }
+
+    if (!nickname || !items || items.length === 0 || !accNum || !transDate) {
         return res.status(400).json({ message: '訂單資料不完整' });
     }
 
@@ -36,8 +42,8 @@ app.post('/api/orders', (req, res) => {
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     // 插入訂單主表
-    const orderQuery = 'INSERT INTO orders (nickname, total_price) VALUES (?, ?)';
-    db.query(orderQuery, [nickname, totalPrice], (err, result) => {
+    const orderQuery = 'INSERT INTO orders (nickname, total_price, acc_num, trans_date) VALUES (?, ?, ?, ?)';
+    db.query(orderQuery, [nickname, totalPrice, accNum, transDate], (err, result) => {
         if (err) {
             console.error('插入訂單主表時出錯:', err);
             return res.status(500).json({ message: '無法儲存訂單' });
@@ -59,6 +65,7 @@ app.post('/api/orders', (req, res) => {
         });
     });
 });
+
 
 
 // 啟動伺服器

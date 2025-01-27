@@ -49,3 +49,32 @@ button {
 button:hover {
   background-color: #218838;
 }
+
+/* 商品區塊樣式 */
+.product-display {
+  display: flex;
+  align-items: center;
+  margin: 20px;
+  gap: 20px;
+}
+
+.product-image img {
+  max-width: 500px; /* 限制圖片寬度 */
+  height: auto;     /* 確保圖片等比例縮放 */
+  border-radius: 10px; /* 圓角邊框，可選 */
+}
+
+.product-info {
+  flex: 1; /* 讓文字區域填滿剩餘空間 */
+}
+
+.product-info h2 {
+  margin: 0 0 10px; /* 標題和描述之間的間距 */
+  font-size: 1.5rem;
+}
+
+.product-info p {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
